@@ -32,7 +32,7 @@ steps:
         "--region",
         "${_REGION}",
         "--platform",
-        "managed"
+        "managed",
         "--allow-unauthenticated",
         "--service-account",
         "reddit-pipeline-sa@reddit-intelligence-platform.iam.gserviceaccount.com"
