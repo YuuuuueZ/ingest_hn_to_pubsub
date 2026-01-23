@@ -24,18 +24,11 @@ steps:
     entrypoint: gcloud
     args:
       [
-        "run",
-        "deploy",
-        "${_SERVICE}",
-        "--image",
-        "${_REGION}-docker.pkg.dev/$PROJECT_ID/${_AR_REPO}/${_SERVICE}:$SHORT_SHA",
-        "--region",
-        "${_REGION}",
-        "--platform",
-        "managed",
-        "--allow-unauthenticated",
-        "--service-account",
-        "reddit-pipeline-sa@reddit-intelligence-platform.iam.gserviceaccount.com"
+        "run","jobs","deploy","${_SERVICE}",
+        "--image","${_REGION}-docker.pkg.dev/$PROJECT_ID/${_AR_REPO}/${_SERVICE}:$SHORT_SHA",
+        "--region","${_REGION}",
+        "--tasks","1",
+        "--max-retries","1"
       ]
 
 images:
