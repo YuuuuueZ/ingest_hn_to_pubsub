@@ -21,15 +21,14 @@ steps:
       ]
 
   - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
-    entrypoint: gcloud
-    args:
-      [
-        "run","jobs","deploy","${_SERVICE}",
-        "--image","${_REGION}-docker.pkg.dev/$PROJECT_ID/${_AR_REPO}/${_SERVICE}:$SHORT_SHA",
-        "--region","${_REGION}",
-        "--tasks","1",
-        "--max-retries","1"
-      ]
+  entrypoint: gcloud
+  args:
+    [
+      "run", "jobs", "deploy", "${_SERVICE}",
+      "--image", "${_REGION}-docker.pkg.dev/$PROJECT_ID/${_AR_REPO}/${_SERVICE}:$SHORT_SHA",
+      "--region", "${_REGION}",
+      "--service-account", "reddit-pipeline-sa@$PROJECT_ID.iam.gserviceaccount.com"
+    ]
 
 images:
   - "${_REGION}-docker.pkg.dev/$PROJECT_ID/${_AR_REPO}/${_SERVICE}:$SHORT_SHA"
