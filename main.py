@@ -22,18 +22,20 @@ def fetch_json(url):
     return requests.get(url, timeout=10).json()
 
 def hn_item_to_record(item):
+    ts = None
+    if item.get("time"):
+        ts = datetime.fromtimestamp(item["time"], tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
     return {
-        "id": f"hn_{item.get('id')}",
-        "subreddit": "hackernews",
-        "title": item.get("title", ""),
-        "body": item.get("text", ""),
-        "author": item.get("by"),
-        "timestamp": datetime.fromtimestamp(
-            item.get("time"), tz=timezone.utc
-        ).isoformat() if item.get("time") else None,
-        "score": item.get("score", 0),
-        "kind": item.get("type", "story"),
-        "url": item.get("url")
+        "id": str(item.get("id")),                 
+        "type": item.get("type", None),
+        "title": item.get("title", None),
+        "text": item.get("text", None),
+        "by": item.get("by", None),
+        "time": ts,                          
+        "score": int(item.get("score", 0) or 0),
+        "descendants": int(item.get("descendants", 0) or 0),
+        "url": item.get("url", None),
     }
 
 def publish(record):
