@@ -13,9 +13,6 @@ POLL_SECONDS = 20
 publisher = pubsub_v1.PublisherClient()
 topic_path = publisher.topic_path(PROJECT_ID, TOPIC_ID)
 
-publisher.publish(topic_path, b'{"test": "hello pubsub"}')
-print("Published test message")
-
 seen_ids = set()
 
 def fetch_json(url):
@@ -27,12 +24,12 @@ def hn_item_to_record(item):
         ts = datetime.fromtimestamp(item["time"], tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
     return {
-        "id": str(item.get("id")),                 
+        "id": str(item.get("id")),
         "type": item.get("type", None),
         "title": item.get("title", None),
         "text": item.get("text", None),
         "by": item.get("by", None),
-        "time": ts,                          
+        "time": ts,
         "score": int(item.get("score", 0) or 0),
         "descendants": int(item.get("descendants", 0) or 0),
         "url": item.get("url", None),
@@ -56,15 +53,14 @@ def main():
                 record = hn_item_to_record(item)
                 publish(record)
                 seen_ids.add(_id)
-                print("Published", record["id"])
+                print("Published", record["id"], flush=True)
             time.sleep(POLL_SECONDS)
         except KeyboardInterrupt:
             break
         except Exception as e:
-            print("Error:", e)
+            print("Error:", e, flush=True)
             time.sleep(5)
-
-
 
 if __name__ == "__main__":
     main()
+
