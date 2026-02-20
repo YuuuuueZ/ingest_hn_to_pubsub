@@ -15,5 +15,5 @@ COPY main.py .
 
 # Cloud Run Job 直接运行 main.py
 ENV PORT=8080
-CMD ["functions-framework", "--target=hello_http", "--host=0.0.0.0", "--port=8080"]
+CMD ["functions-framework", "--target=ingest", "--host=0.0.0.0", "--port=8080"]
 
