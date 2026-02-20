@@ -14,5 +14,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY main.py .
 
 # Cloud Run Job 直接运行 main.py
-CMD ["python", "main.py"]
+ENV PORT=8080
+CMD ["functions-framework", "--target=hello_http", "--host=0.0.0.0", "--port=8080"]
 
