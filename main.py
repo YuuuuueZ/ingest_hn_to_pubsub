@@ -33,7 +33,7 @@ def hn_item_to_record(item):
 
 def publish(topic_path, record):
     data = json.dumps(record).encode("utf-8")
-    return publisher.publish(topic_path, data=data).result()
+    publisher.publish(topic_path, data=data)
 
 def ingest_newstories(topic_path, n=30):
     ids = fetch_json(f"{HN_BASE}/newstories.json")[:n]
