@@ -39,21 +39,36 @@ def publish(topic_path, record):
     data = json.dumps(record).encode("utf-8")
     publisher.publish(topic_path, data=data)  # 不要 .result()，避免卡住
 
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
+def fetch_item(_id):
+    try:
+        item = fetch_json(f"{HN_BASE}/item/{_id}.json")
+        return _id, item
+    except Exception:
+        return _id, None
+
 def backfill_range(topic_path, start_id, end_id, limit):
     end = min(end_id, start_id + limit - 1)
-    scanned = 0
+    ids = list(range(start_id, end + 1))
+
+    scanned = len(ids)
     published = 0
 
-    for _id in range(start_id, end + 1):
-        scanned += 1
-        item = fetch_json(f"{HN_BASE}/item/{_id}.json")
-        if not item:
-            continue
-        if item.get("type") != "story":
-            continue
-        record = hn_item_to_record(item)
-        publish(topic_path, record)
-        published += 1
+    max_workers = int(os.environ.get("MAX_WORKERS", "20"))
+
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        futures = [executor.submit(fetch_item, _id) for _id in ids]
+
+        for future in as_completed(futures):
+            _id, item = future.result()
+            if not item:
+                continue
+            if item.get("type") != "story":
+                continue
+            record = hn_item_to_record(item)
+            publish(topic_path, record)
+            published += 1
 
     return scanned, published, end
 
