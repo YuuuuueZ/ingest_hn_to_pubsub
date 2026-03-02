@@ -13,7 +13,7 @@ BQ_DATASET = os.environ.get("BQ_DATASET", "hn_analytics")
 STATE_TABLE = os.environ.get("STATE_TABLE", "backfill_state")
 STATE_NAME = os.environ.get("STATE_NAME", "hn_3mo")
 
-publisher = pubsub_v1.PublisherClient()
+publisher = pubsub_v1.PublisherClient(transport="rest")
 bq = bigquery.Client()
 
 def fetch_json(url):
